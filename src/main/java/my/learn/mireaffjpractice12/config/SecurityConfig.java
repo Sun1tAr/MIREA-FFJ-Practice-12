@@ -1,7 +1,7 @@
 package my.learn.mireaffjpractice12.config;
 
 import lombok.RequiredArgsConstructor;
-import my.learn.mireaffjpractice12.controller.filter.JwtRequestFilter;
+import my.learn.mireaffjpractice12.components.filter.JwtRequestFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -34,9 +34,21 @@ public class SecurityConfig {
                 .cors(c -> c.disable())
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v1/notes/health").permitAll()
+                        /*Документация OpenAPI*/
+                        .requestMatchers(
+                                "/swagger-ui/**",
+                                "/v3/**",
+                                "/swagger-ui.html",
+                                "/webjars/**",
+                                "/swagger-resources/**",
+                                "/configuration/**"
+                        ).permitAll()
+
+                        /*Спринг актуатор*/
+                        .requestMatchers("/actuator/**").permitAll()
+
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/swagger-ui/**").permitAll()
+                        .requestMatchers("/api/v1/notes/health").permitAll()
 
                         .requestMatchers("/auth/logout").authenticated()
                         .requestMatchers("/api/v1/notes/**").authenticated()

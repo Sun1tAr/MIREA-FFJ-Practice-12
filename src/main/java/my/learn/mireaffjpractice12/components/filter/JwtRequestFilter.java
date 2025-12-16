@@ -1,4 +1,4 @@
-package my.learn.mireaffjpractice12.controller.filter;
+package my.learn.mireaffjpractice12.components.filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

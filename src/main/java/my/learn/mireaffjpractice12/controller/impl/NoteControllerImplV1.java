@@ -1,5 +1,6 @@
 package my.learn.mireaffjpractice12.controller.impl;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import my.learn.mireaffjpractice12.DTO.request.CreateNoteRequest;
@@ -20,13 +21,17 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/notes")
 @RequiredArgsConstructor
-@Tag(name = "Note controller")
+@Tag(name = "API Заметок", description = "Является основным контроллером данного сервиса и предназначен для управления заметками")
 public class NoteControllerImplV1 implements NoteController {
 
     private final NoteService noteService;
     private final NoteMapper mapper;
 
     @Override
+    @Operation(
+            summary = "Создание новой заметки",
+            description = "Создание и добавление новой заметки в API"
+    )
     public ResponseEntity<NoteDTO> addNote(CreateNoteRequest createNoteRequest) {
         NoteDTO noteDTO = mapper.toNoteDTO(noteService.addNote(createNoteRequest));
         return new ResponseEntity<>(noteDTO, HttpStatus.CREATED);
