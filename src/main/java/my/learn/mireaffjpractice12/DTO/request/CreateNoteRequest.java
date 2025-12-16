@@ -12,11 +12,24 @@ import lombok.NoArgsConstructor;
 public class CreateNoteRequest {
 
 
-
+    @Schema(
+            name = "Заголовок/название новой заметки",
+            example = "My Note",
+            requiredMode = Schema.RequiredMode.REQUIRED,
+            minLength = 1,
+            maxLength = 50,
+            type = "String"
+    )
     @NotBlank
     @Size(min = 1, max = 50)
     private String title;
 
+    @Schema(
+            name = "Описание новой заметки",
+            example = "Content",
+            requiredMode = Schema.RequiredMode.REQUIRED,
+            type = "String"
+    )
     @NotBlank
     private String content;
 

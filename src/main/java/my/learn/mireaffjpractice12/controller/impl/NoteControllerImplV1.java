@@ -21,17 +21,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/notes")
 @RequiredArgsConstructor
-@Tag(name = "API Заметок", description = "Является основным контроллером данного сервиса и предназначен для управления заметками")
 public class NoteControllerImplV1 implements NoteController {
 
     private final NoteService noteService;
     private final NoteMapper mapper;
 
     @Override
-    @Operation(
-            summary = "Создание новой заметки",
-            description = "Создание и добавление новой заметки в API"
-    )
     public ResponseEntity<NoteDTO> addNote(CreateNoteRequest createNoteRequest) {
         NoteDTO noteDTO = mapper.toNoteDTO(noteService.addNote(createNoteRequest));
         return new ResponseEntity<>(noteDTO, HttpStatus.CREATED);
