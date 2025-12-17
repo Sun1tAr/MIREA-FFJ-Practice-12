@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import my.learn.mireaffjpractice12.DTO.service.JWTokenOwner;
 import my.learn.mireaffjpractice12.config.JwtConfig;
 import my.learn.mireaffjpractice12.entity.UserAuth;
+import my.learn.mireaffjpractice12.exception.JWTException;
 import my.learn.mireaffjpractice12.model.JWToken;
 import my.learn.mireaffjpractice12.model.TokenType;
 import my.learn.mireaffjpractice12.service.JWTService;
@@ -30,12 +31,17 @@ public class JWTServiceImpl implements JWTService {
         TokenType type = TokenType.ACCESS_BEARER;
         Date issuedAt = new Date();
         Date expiresAt = new Date(issuedAt.getTime() + jwtConfig.getAccessTokenLifetime().toMillis());
-        String payload = jwtUtils.generateToken(
-                user,
-                issuedAt,
-                expiresAt,
-                type,
-                secretKey);
+        String payload;
+        try {
+            payload = jwtUtils.generateToken(
+                    user,
+                    issuedAt,
+                    expiresAt,
+                    type,
+                    secretKey);
+        } catch (Exception e) {
+            throw new JWTException("JWT generation failed");
+        }
         return JWToken.builder()
                 .tokenType(type)
                 .token(payload)
@@ -49,12 +55,17 @@ public class JWTServiceImpl implements JWTService {
         TokenType type = TokenType.REFRESH_BEARER;
         Date issuedAt = new Date();
         Date expiresAt = new Date(issuedAt.getTime() + jwtConfig.getRefreshTokenLifetime().toMillis());
-        String payload = jwtUtils.generateToken(
-                user,
-                issuedAt,
-                expiresAt,
-                type,
-                secretKey);
+        String payload;
+        try {
+            payload = jwtUtils.generateToken(
+                    user,
+                    issuedAt,
+                    expiresAt,
+                    type,
+                    secretKey);
+        } catch (Exception e) {
+            throw new JWTException("JWT generation failed");
+        }
 
         redisTemplate.opsForValue().set(user.getId(), payload);
 
@@ -68,8 +79,14 @@ public class JWTServiceImpl implements JWTService {
 
     @Override
     public JWTokenOwner getJWTOwner(String token) {
-        Long id = jwtUtils.getUserIdFromToken(token,  secretKey);
-        String username = jwtUtils.getUsernameFromToken(token,  secretKey);
+        Long id;
+        String username;
+        try {
+            id = jwtUtils.getUserIdFromToken(token,  secretKey);
+            username = jwtUtils.getUsernameFromToken(token,  secretKey);
+        } catch (Exception e) {
+            throw new JWTException("JWT generation failed");
+        }
         return new JWTokenOwner(id, username);
     }
 

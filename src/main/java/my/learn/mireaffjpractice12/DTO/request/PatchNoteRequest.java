@@ -16,8 +16,7 @@ public class PatchNoteRequest {
     @Schema(
             name = "fields",
             description = "Поля, которые необходимо заменить. " +
-                    "Передается список названий полей и их обновленных значений в формате \"ключ : значение\"",
-            type = "Map<String, Object>"
+                    "Передается список названий полей и их обновленных значений в формате \"ключ : значение\""
     )
     @NotNull
     private Map<String,Object> fields;

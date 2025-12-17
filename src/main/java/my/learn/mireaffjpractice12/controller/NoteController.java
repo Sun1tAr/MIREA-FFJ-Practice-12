@@ -295,11 +295,129 @@ public interface NoteController extends HealthController {
     @DeleteMapping("/{id}")
     ResponseEntity<?> deleteNote(@PathVariable(name = "id") Long id);
 
+    @Operation(
+            summary = "Все заметки контекста",
+            description = "Получение всех заметок, находящихся в контексте приложения",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Актуальный список заметок",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "Непустой список заметок",
+                                                    value = "[\n" +
+                                                            "    {\n" +
+                                                            "        \"id\": 9,\n" +
+                                                            "        \"title\": \"Example 1\",\n" +
+                                                            "        \"content\": \"Example 1\",\n" +
+                                                            "        \"createdAt\": \"2025-12-17T19:02:41.173301\",\n" +
+                                                            "        \"updatedAt\": \"2025-12-17T19:02:41.173301\"\n" +
+                                                            "    },\n" +
+                                                            "    {\n" +
+                                                            "        \"id\": 10,\n" +
+                                                            "        \"title\": \"Example 2\",\n" +
+                                                            "        \"content\": \"Example 2\",\n" +
+                                                            "        \"createdAt\": \"2025-12-17T19:02:47.687745\",\n" +
+                                                            "        \"updatedAt\": \"2025-12-17T19:02:47.687745\"\n" +
+                                                            "    },\n" +
+                                                            "    {\n" +
+                                                            "        \"id\": 11,\n" +
+                                                            "        \"title\": \"Example 3\",\n" +
+                                                            "        \"content\": \"Example 3\",\n" +
+                                                            "        \"createdAt\": \"2025-12-17T19:02:54.783692\",\n" +
+                                                            "        \"updatedAt\": \"2025-12-17T19:02:54.783692\"\n" +
+                                                            "    }\n" +
+                                                            "]"
+                                            ),
+                                            @ExampleObject(
+                                                    name = "Пустой список заметок",
+                                                    value = "[]"
+                                            )
+                                    },
+                                    schema = @Schema(implementation = NoteDTO.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Forbidden - Доступ к ресурсу запрещен",
+                            content = @Content()
+
+                    )
+            }
+    )
     @GetMapping
     ResponseEntity<List<NoteDTO>> getAllNotes();
 
+    @Operation(
+            summary = "Получение заметки по Id",
+            description = "Получение информации о существующей заметке по ее Id",
+            parameters = {
+                    @Parameter(
+                            name = "id",
+                            description = "Id запрашиваемой заметки",
+                            required = true
+                    )
+            },
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Заметка успешно найдена",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "Найденная заметка",
+                                                    value = "{\n" +
+                                                            "    \"id\": 9,\n" +
+                                                            "    \"title\": \"Example 1\",\n" +
+                                                            "    \"content\": \"Example 1\",\n" +
+                                                            "    \"createdAt\": \"2025-12-17T19:02:41.173301\",\n" +
+                                                            "    \"updatedAt\": \"2025-12-17T19:02:41.173301\"\n" +
+                                                            "}"
+                                            )
+                                    },
+                                    schema = @Schema(implementation = NoteDTO.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Заметка не найдена. В теле сообщение об ошибке",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "Сообщение об ошибке",
+                                                    value = "{\n" +
+                                                            "    \"message\": \"Note with id 9 not found\"\n" +
+                                                            "}"
+                                            )
+                                    }
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Forbidden - Доступ к ресурсу запрещен",
+                            content = @Content()
+
+                    )
+            }
+    )
     @GetMapping("/{id}")
     ResponseEntity<NoteDTO> getNoteById(@PathVariable(name = "id") Long id);
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
