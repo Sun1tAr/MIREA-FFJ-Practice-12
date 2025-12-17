@@ -14,7 +14,8 @@ public class PutNoteRequest {
 
 
     @Schema(
-            name = "Обновленный заголовок/название заметки",
+            name = "title",
+            description = "Обновленный заголовок/название заметки",
             example = "My Note",
             requiredMode = Schema.RequiredMode.REQUIRED,
             minLength = 1,
@@ -26,7 +27,8 @@ public class PutNoteRequest {
 
 
     @Schema(
-            name = "Обновленное описание заметки",
+            name = "content",
+            description = "Обновленное описание заметки",
             example = "Content",
             requiredMode = Schema.RequiredMode.REQUIRED
     )

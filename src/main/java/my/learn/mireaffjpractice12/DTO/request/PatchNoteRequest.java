@@ -14,9 +14,10 @@ import java.util.Map;
 public class PatchNoteRequest {
 
     @Schema(
-            name = "Поля, которые необходимо заменить",
-            description = "Передается список названий полей и их обновленных значений в формате \"ключ : значение\"",
-            type = "String"
+            name = "fields",
+            description = "Поля, которые необходимо заменить. " +
+                    "Передается список названий полей и их обновленных значений в формате \"ключ : значение\"",
+            type = "Map<String, Object>"
     )
     @NotNull
     private Map<String,Object> fields;

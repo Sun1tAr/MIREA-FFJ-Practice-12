@@ -13,7 +13,8 @@ public class CreateNoteRequest {
 
 
     @Schema(
-            name = "Заголовок/название новой заметки",
+            name = "title",
+            description = "Заголовок/название новой заметки",
             example = "My Note",
             requiredMode = Schema.RequiredMode.REQUIRED,
             minLength = 1,
@@ -25,7 +26,8 @@ public class CreateNoteRequest {
     private String title;
 
     @Schema(
-            name = "Описание новой заметки",
+            name = "content",
+            description = "Описание новой заметки",
             example = "Content",
             requiredMode = Schema.RequiredMode.REQUIRED,
             type = "String"
