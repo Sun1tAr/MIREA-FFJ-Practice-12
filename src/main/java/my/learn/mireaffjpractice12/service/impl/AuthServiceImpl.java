@@ -123,9 +123,9 @@ public class AuthServiceImpl implements AuthService {
     public UserAuth loadUserByUsername(String username) throws UsernameNotFoundException {
         UserAuth userAuth;
         try {
-            userAuth = authRepository.findByUsername(username);
+            userAuth = authRepository.findByUsername(username).orElseThrow();
         } catch (Exception e) {
-            throw new UsernameNotFoundException("Invalid email");
+            throw new UsernameNotFoundException("Invalid username or password");
         }
         return userAuth;
     }

@@ -3,10 +3,12 @@ package my.learn.mireaffjpractice12.exception.handler;
 import my.learn.mireaffjpractice12.exception.AppException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
 
 import java.util.HashMap;
 import java.util.List;
@@ -42,6 +44,14 @@ public class GeneralExceptionHandler {
         body.put("message",e.getMessage());
 
         return new ResponseEntity<>(body, e.getStatus());
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<Object> handleAuthException(AuthenticationException e) {
+        Map<String,Object> body = new HashMap<>();
+        body.put("message",e.getMessage());
+
+        return new ResponseEntity<>(body, HttpStatus.UNAUTHORIZED);
     }
 
 
