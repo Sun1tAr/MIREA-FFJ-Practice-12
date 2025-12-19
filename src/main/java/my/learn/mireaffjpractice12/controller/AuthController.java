@@ -118,7 +118,7 @@ public interface AuthController {
     ResponseEntity<AuthResponse> registerUser(@Valid @RequestBody RegisterUserRequest req);
 
     @Operation(
-            summary = "Выход пользователя",
+            summary = "Авторизация пользователя",
             description = "Пользователь входит в контекст безопасности приложения и получает токены доступа и свежести",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "Данные для входа пользователя",
@@ -207,22 +207,38 @@ public interface AuthController {
     @PostMapping("/login")
     ResponseEntity<AuthResponse> loginUser(@Valid @RequestBody LoginUserRequest req);
 
-    @Operation( //todo
-            summary = "Регистрация нового пользователя",
-            description = "Пользователь регистрируется в контексте приложения и получает токены доступа и свежести",
+    @Operation(
+            summary = "Деавторизация пользователя",
+            description = "Токены доступа и свежести добавляются в блэклист",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Пользователь успешно деавторизован",
+                            content = @Content()
+                    ),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Forbidden - Доступ к ресурсу запрещен",
+                            content = @Content()
+
+                    )
+            }
+    )
+    @PostMapping("/logout")
+    ResponseEntity<AuthResponse> logoutUser();
+
+    @Operation(
+            summary = "Обновление токенов доступа и свежести",
+            description = "Токены доступа и свежести обновляются и передаются пользователю",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Данные для регистрации пользователя",
+                    description = "Текущий токен свежести",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = RegisterUserRequest.class),
+                            schema = @Schema(implementation = RefreshTokenRequest.class),
                             examples = {
                                     @ExampleObject(
-                                            name = "Пример валидных данных",
-                                            value = "{\"email\":\"john@example.com\",\"password\":\"Pass123\"}\n"
-                                    ),
-                                    @ExampleObject(
-                                            name = "Пример невалидных данных",
-                                            value = "{\"email\":\"joexample.com\",\"password\":\"Pass123\"}"
+                                            name = "Пример тела запроса",
+                                            value = "{\"refreshToken\":\"xxx.yyy.zzz\"}\n"
                                     )
                             }
 
@@ -231,7 +247,7 @@ public interface AuthController {
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "Пользователь успешно создан",
+                            description = "Токены успешно обновлены",
                             content = @Content(
                                     mediaType = "application/json",
                                     schema = @Schema(implementation = AuthResponse.class),
@@ -243,14 +259,14 @@ public interface AuthController {
                                                             "        {\n" +
                                                             "            \"token\": \"xxx.yyy.zzz\",\n" +
                                                             "            \"tokenType\": \"ACCESS_BEARER\",\n" +
-                                                            "            \"issuedAt\": \"2025-12-17T16:01:56.377+00:00\",\n" +
-                                                            "            \"expiresAt\": \"2025-12-18T16:01:56.377+00:00\"\n" +
+                                                            "            \"issuedAt\": \"2025-12-19T10:42:08.041+00:00\",\n" +
+                                                            "            \"expiresAt\": \"2025-12-20T10:42:08.041+00:00\"\n" +
                                                             "        },\n" +
                                                             "        {\n" +
                                                             "            \"token\": \"xxx.yyy.zzz\",\n" +
                                                             "            \"tokenType\": \"REFRESH_BEARER\",\n" +
-                                                            "            \"issuedAt\": \"2025-12-17T16:01:56.450+00:00\",\n" +
-                                                            "            \"expiresAt\": \"2025-12-31T16:01:56.450+00:00\"\n" +
+                                                            "            \"issuedAt\": \"2025-12-19T10:42:08.034+00:00\",\n" +
+                                                            "            \"expiresAt\": \"2026-01-02T10:42:08.034+00:00\"\n" +
                                                             "        }\n" +
                                                             "    ]\n" +
                                                             "}"
@@ -259,42 +275,21 @@ public interface AuthController {
                             )
                     ),
                     @ApiResponse(
-                            responseCode = "409",
-                            description = "Пользователь с таким email уже существует",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = AuthResponse.class),
-                                    examples = {
-                                            @ExampleObject(
-                                                    name = "Пример ответа",
-                                                    value = "{\n" +
-                                                            "    \"message\": \"could not execute statement [ERROR: " +
-                                                            "duplicate key value violates unique constraint \\\"uk46ygss" +
-                                                            "fdmp410ncsrcmnythun\\\"\\n  Подробности: " +
-                                                            "Key (username)=(john@example.com) already exists.] [insert " +
-                                                            "into user_auths (authorities,password,user_id,username) " +
-                                                            "values (?,?,?,?)]; SQL [insert into user_auths (authorities," +
-                                                            "password,user_id,username) values (?,?,?,?)]; constraint [" +
-                                                            "uk46ygssfdmp410ncsrcmnythun]\"\n" +
-                                                            "}"
-                                            )
-                                    }
-                            )
+                            responseCode = "403",
+                            description = "Forbidden - Доступ к ресурсу запрещен",
+                            content = @Content()
+
                     ),
                     @ApiResponse(
-                            responseCode = "400",
-                            description = "Переданы невалидные данные. " +
-                                    "Причины невалидности представлены в теле ответа",
+                            responseCode = "401",
+                            description = "Токен некорректный",
                             content = @Content(
                                     mediaType = "application/json",
                                     examples = {
                                             @ExampleObject(
-                                                    name = "Email не соответствует необходимому формату",
+                                                    name = "Пустой/протухший токен",
                                                     value = "{\n" +
-                                                            "    \"message\": \"Переданы невалидные данные\",\n" +
-                                                            "    \"errors\": {\n" +
-                                                            "        \"email\": \"должно иметь формат адреса электронной почты\"\n" +
-                                                            "    }\n" +
+                                                            "    \"message\": \"Invalid refresh token\"\n" +
                                                             "}"
                                             )
                                     }
@@ -302,9 +297,6 @@ public interface AuthController {
                     )
             }
     )
-    @PostMapping("/logout")
-    ResponseEntity<AuthResponse> logoutUser();
-
     @PostMapping("/refresh")
     ResponseEntity<AuthResponse> refreshToken(@Valid @RequestBody RefreshTokenRequest req);
 
